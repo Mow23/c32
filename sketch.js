@@ -7,11 +7,14 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
+var score = 0;
+var bg;
 
 var gameState = "play";
 
 function preload() {
     backgroundImg = loadImage("sprites/bg.png");
+    clock();
 }
 
 function setup(){
@@ -19,7 +22,7 @@ function setup(){
     engine = Engine.create();
     world = engine.world;
 
-
+    
     ground = new Ground(600,height,1200,20);
     platform = new Ground(150, 305, 300, 170);
 
@@ -42,21 +45,29 @@ function setup(){
 
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
+    
 }
 
 function draw(){
+    if(clock);
     background(backgroundImg);
     Engine.update(engine);
+
+    textSize(30);
+    text("Score: "+ score, 500,50);
+    
     //strokeWeight(4);
     box1.display();
     box2.display();
     ground.display();
     pig1.display();
+    pig1.score();
     log1.display();
 
     box3.display();
     box4.display();
     pig3.display();
+    pig3.score();
     log3.display();
 
     box5.display();
@@ -67,6 +78,7 @@ function draw(){
     platform.display();
     //log6.display();
     slingshot.display();    
+
 }
 
 function mouseDragged(){
@@ -74,7 +86,6 @@ function mouseDragged(){
       Matter.Body.setPosition(bird.body, {x: mouseX , y: mouseY});
     }
 }
-
 
 function mouseReleased(){
     slingshot.fly();
@@ -86,5 +97,18 @@ function keyPressed(){
         gameState = "play"
         slingshot.attach(bird.body);
     }
+}
 
+async function clock (){
+var xyz = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+var a = await xyz.json();
+var b = await a.datetime;
+var c = await b.slice(11,13);
+console.log(c);
+if(c >=06 && c <=18){
+    bg = "sprites/b2.jpg";
+}else {
+    bg = "sprites/bg.png";
+   
+}  backgroundImg = loadImage(bg);
 }
